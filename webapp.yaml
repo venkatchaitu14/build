@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+    name: app-Deploy
+    labels:
+        app: webapp
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: webapp
+    template:
+        metadata:
+            labels:
+                app: webapp
+        spec:
+            containers:
+            - name: webapp
+              image: 019076941165.dkr.ecr.us-west-2.amazonaws.com/webapp:latest
+              ports:
+                - containerPort: 8080
+              resources:
+                requests:
+                    memory: "256Mi"
+                    cpu: "250m"
+                limits:
+                    memory: "512Mi"
+                    cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: webapp-Service
+spec:
+    selector:
+        app: webapp
+    type: LoadBalancer
+    ports:
+     - port: 80
+       targetPort: 8080
+       protocol: TCP
